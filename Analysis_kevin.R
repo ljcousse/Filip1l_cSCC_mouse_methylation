@@ -290,6 +290,12 @@ shelf[shelf & shore] <- FALSE
 intergenic <- rep(T,length(cgi))
 intergenic[cgi | shore | shelf] <- FALSE
 
+# CGI context per CpG (column cgi_sort in output_rrbs.txt)
+cgi_sort <- rep("open_sea",length(cgi))
+cgi_sort[shelf] <- "shelf"
+cgi_sort[shore] <- "shore"
+cgi_sort[cgi] <- "island"
+
 
 # Gene and gene symbol annotation
 overlaps_genic <- findOverlaps(locs,genic_gr)
@@ -386,7 +392,7 @@ boxplot(formula=y~f1,names=c("Control","Tumor"),data=data_lm,xlab="Biopt",ylab="
 boxplot(formula=y~f2,names=paste('id',levels(f2)),las=2,data=data_lm,xlab="Biopt",ylab="Total reads")
 dev.off()
 
-tiff("Methylation_plot_paper.jpg",units="in", width=3, height=4,res=300)
+tiff("Methylation_plot_paper_small.tiff",units="in", width=3, height=4,res=300)
 boxplot(formula=y~f1,names=c("Control","Tumor"),data=data_lm,las=1,xlab="Biopt",
         ylab="Methylation percentage",cex.lab=0.6,cex.axis=0.5,cex.main=0.6,cex=0.5,lwd=0.5,bowlwd=0.5,
         xaxt="n",yaxt="n",axes=F)
@@ -485,11 +491,12 @@ func[promoter] <- "promoter"
 cn_ori <- colnames(Bres)
 
 Bres_complete <- cbind(as.data.frame(locs)[1:2],gene[,1],gene_symbol[,1],func,Bres,B_obs,
-                       gene[,2:ncol(gene)],gene_symbol[,2:ncol(gene_symbol)])
+                       gene[,2:ncol(gene)],gene_symbol[,2:ncol(gene_symbol)],cgi_sort)
 colnames(Bres_complete) <- c("chr","locations","gene","gene_symbol","func",cn_ori,
-                             "mean_T","sd_T","mean_C","sd_C", 
+                             "mean_T","sd_T","mean_C","sd_C",
                              paste("gene_alt",1:(ncol(gene)-1),sep="_"),
-                             paste("gene_symbol_alt",1:(ncol(gene)-1),sep="_"))
+                             paste("gene_symbol_alt",1:(ncol(gene)-1),sep="_"),
+                             "cgi_sort")
 
 Bres_complete <- Bres_complete[sort(Bres_complete$P.Value,index.return=T)$ix,]
 print(head(Bres_complete))
@@ -602,7 +609,7 @@ DMRs_sorted_annot <- cbind(apply(gene_DMR,1,paste_genenames),apply(gene_symbol_D
 colnames(DMRs_sorted_annot) <- c("genes","gene_symbols","type",colnames(DMRs_sorted))
 print(head(DMRs_sorted_annot))
 
-DMRs_sorted_annot$FDR <- p.adjust(DMRs_sorted_annot$median.p)
+DMRs_sorted_annot$FDR <- p.adjust(DMRs_sorted_annot$median.p, method="BH")
 
 write.table(DMRs_sorted_annot,file="DMR_analysis.txt",col.names=T,row.names = F,quote = F,sep="\t")
 

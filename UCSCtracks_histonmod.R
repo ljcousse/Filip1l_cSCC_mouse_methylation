@@ -19,6 +19,7 @@ links <- c("https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM3634nnn/GSM3634100/suppl
 for (i in 1:length(links)){
   system(paste("wget ",links[i],sep=""))
 }
+system("wget http://hgdownload.cse.ucsc.edu/goldenPath/mm10/liftOver/mm10ToMm9.over.chain.gz")
 system("pigz -d *.gz")
 
 

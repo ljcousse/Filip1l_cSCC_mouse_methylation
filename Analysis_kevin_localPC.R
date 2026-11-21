@@ -10,6 +10,7 @@ dir_work <- env$dir_work
 setwd(dir_work)
 
 library(xlsx)
+library(ggplot2)
 output_rrbs <- read.table("output_rrbs.txt",sep="\t",stringsAsFactors = T,header = T)
 
 hypo <- output_rrbs[output_rrbs$logFC<0,]

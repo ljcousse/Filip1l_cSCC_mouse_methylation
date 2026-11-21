@@ -26,10 +26,10 @@ dependencies:
   - bioconductor-methylumi=2.32.0
   - bioconductor-champdata=2.18.0
   # CRAN
-  - r-yaml
-  - r-gplots
-  - r-ggplot2
-  - r-xlsx
+  - r-yaml=2.2.1
+  - r-gplots=3.1.1
+  - r-ggplot2=3.3.3
+  - r-xlsx=0.6.5
   # Genome browser tracks (ProcessBigWig.bash, UCSCtracks_histonmod.R)
   - ucsc-bigwigtobedgraph
   - ucsc-liftover

@@ -1,29 +1,22 @@
-# conda create -n bigWigHandling python=2
-# conda activate bigWigHandling run yourself before bash
-# conda install ucsc-bigwigmerge
-# conda install ucsc-bedsort
-# conda install ucsc-bigwigtobedgraph
-# conda install ucsc-bedgraphtobigwig
+#!/bin/bash
+# Tools are in conda_environment.yml (conda activate cscc_mouse)
 
 # Directories are read from environment.yml (copy environment_example.yml and fill in the local paths)
 dir_repo=$(pwd)
 dir_work=$(awk '$1=="dir_work:" {print $2}' environment.yml)
 cd ${dir_work}
 
-cd chipseq_tracks
-rm $(ls | grep -v WT)
-cd ..
-
 wget http://hgdownload.cse.ucsc.edu/goldenPath/mm9/liftOver/mm9ToMm10.over.chain.gz
 pigz -d mm9ToMm10.over.chain.gz
 fetchChromSizes mm10 > mm10.chrom.sizes
 
-for file in $(ls chipseq_tracks | grep merged.bw)
+# only the wild-type (WT) tracks are processed
+for file in $(ls chipseq_tracks | grep WT | grep merged.bw)
 do
 	echo ${file:0:10}
 	echo $file
 	bigWigToBedGraph chipseq_tracks/$file chipseq_tracks/${file:0:10}.bedGraph
-	liftOver chipseq_tracks/${file:0:10}.BedGraph mm9ToMm10.over.chain chipseq_tracks/${file:0:10}_mm10.bedGraph chipseq_tracks/${file:0:10}_failed.bedGraph
+	liftOver chipseq_tracks/${file:0:10}.bedGraph mm9ToMm10.over.chain chipseq_tracks/${file:0:10}_mm10.bedGraph chipseq_tracks/${file:0:10}_failed.bedGraph
 	bedSort chipseq_tracks/${file:0:10}_mm10.bedGraph chipseq_tracks/${file:0:10}_mm10_sorted.bedGraph
 	#bedGraphToBigWig chipseq_tracks/${file:0:10}_mm10_sorted.BedGraph  mm10.chrom.sizes chipseq_tracks/${file:0:10}_mm10.bw
 	Rscript ${dir_repo}/mergeRegions.R ${file:0:10}

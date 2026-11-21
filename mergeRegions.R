@@ -26,11 +26,13 @@ while(length(to_merge)!=0){
     }
     if (nrow(bedgraph_sorted_part)==2){
       if (bedgraph_sorted_part$V4[1]==bedgraph_sorted_part$V4[2]){
+        # same value: extend interval i to the end of the next interval, then remove the next one
+        bedgraph_sorted$V3[i] <- max(bedgraph_sorted$V3[i],bedgraph_sorted$V3[i+1])
         to_remove <- c(to_remove,i+1)
       } else {
         min_V2 <- bedgraph_sorted_part$V2[rownames(bedgraph_sorted_part)!=i]
         max_V3 <- bedgraph_sorted_part$V3[rownames(bedgraph_sorted_part)!=i]
-        if (min_V2>bedgraph_sorted$V2[i] & max_V3<bedgraph_sorted$V2[i]){
+        if (min_V2>bedgraph_sorted$V2[i] & max_V3<bedgraph_sorted$V3[i]){
           rows2add_part <- rbind(bedgraph_sorted[i,],bedgraph_sorted[i,])
           rows2add_part$V3[1] <- min_V2
           rows2add_part$V2[2] <- max_V3
@@ -52,7 +54,7 @@ while(length(to_merge)!=0){
     } else {
       min_V2 <- min(bedgraph_sorted_part$V2[rownames(bedgraph_sorted_part)!=i])
       max_V3 <- max(bedgraph_sorted_part$V3[rownames(bedgraph_sorted_part)!=i])
-      if (min_V2>bedgraph_sorted$V2[i] & max_V3<bedgraph_sorted$V2[i]){
+      if (min_V2>bedgraph_sorted$V2[i] & max_V3<bedgraph_sorted$V3[i]){
         rows2add_part <- rbind(bedgraph_sorted[i,],bedgraph_sorted[i,])
         rows2add_part$V3[1] <- min_V2
         rows2add_part$V2[2] <- max_V3
@@ -75,8 +77,8 @@ while(length(to_merge)!=0){
   if(length(to_remove)!=0){
     bedgraph_sorted<- bedgraph_sorted[-to_remove,]
     bedgraph_sorted <- rbind(bedgraph_sorted,rows2add)
-    # bedgraph_sorted <- bedgraph_sorted[sort(paste(bedgraph_sorted$V1,bedgraph_sorted$V2,sep="_"),index.return=T)$ix,]
-    bedgraph_sorted <- bedgraph_sorted[sort(bedgraph_sorted$V2,index.return=T)$ix,]
+    # sort on chromosome and then position, so overlapping intervals are next to each other
+    bedgraph_sorted <- bedgraph_sorted[order(bedgraph_sorted$V1,bedgraph_sorted$V2),]
     rownames(bedgraph_sorted) <- 1:nrow(bedgraph_sorted)
   }
 

@@ -2,6 +2,11 @@
 ## Load additional functions
 source("AdditionalFunctions.R")
 
+library(wateRmelon)
+library(ChAMPdata)
+library(limma)
+library(biomaRt)
+library(gplots)
 library(yaml)
 
 # Directories are read from environment.yml (copy environment_example.yml and fill in the local paths)
@@ -12,6 +17,8 @@ env <- read_yaml("environment.yml")
 
 dir_work <- env$dir_work
 setwd(dir_work)
+dir.create("Plots", showWarnings = F)
+dir.create("Risk_analysis", showWarnings = F)
 
 
 ##################
@@ -126,7 +133,7 @@ dat_boxplot_final_state <- dat_boxplots_state
 dat_boxplot_final_state$cmeans <- dat_boxplot_final_state$cmeans*100
 dat_boxplot_final_subtypes <- dat_boxplots_subtypes
 dat_boxplot_final_subtypes$cmeans <- dat_boxplot_final_subtypes$cmeans*100
-tiff("Methylation_lyko_plot.jpg",height=8,width=4,units="in",res=150)
+tiff("Methylation_lyko_plot.tiff",height=8,width=4,units="in",res=150)
 par(mfrow=c(2,1))
 par(mar=c(2,4,2,2))
 boxplot(cmeans~state,names=c("control","AK","cSCC"),data=dat_boxplot_final_state,
@@ -1325,9 +1332,9 @@ for (i in 1:nrow(GOI_Stem)){
 }
 mask_am_CpG_rrbs <- mask_am_CpG_rrbs>0
 
-GOI_am_CpG_rrbs <- cbind(output_rrbs[(output_rrbs$adj.P.Val<0.10) & (abs(output_rrbs$mean_T-output_rrbs$mean_C)>0.30) & mask_am_CpG_rrbs,c(1,2,62)],
-                         output_rrbs[(output_rrbs$adj.P.Val<0.10) & (abs(output_rrbs$mean_T-output_rrbs$mean_C)>0.30) & mask_am_CpG_rrbs,12] - 
-                           output_rrbs[(output_rrbs$adj.P.Val<0.10) & (abs(output_rrbs$mean_T-output_rrbs$mean_C)>0.30) & mask_am_CpG_rrbs,14])
+GOI_am_CpG_rrbs <- cbind(output_rrbs[(output_rrbs$adj.P.Val<0.10) & (abs(output_rrbs$mean_T-output_rrbs$mean_C)>0.30) & mask_am_CpG_rrbs,c("chr","locations","gene_symbol_all")],
+                         output_rrbs[(output_rrbs$adj.P.Val<0.10) & (abs(output_rrbs$mean_T-output_rrbs$mean_C)>0.30) & mask_am_CpG_rrbs,"mean_T"] - 
+                           output_rrbs[(output_rrbs$adj.P.Val<0.10) & (abs(output_rrbs$mean_T-output_rrbs$mean_C)>0.30) & mask_am_CpG_rrbs,"mean_C"])
 colnames(GOI_am_CpG_rrbs) <- c("chr","pos","gene","D % meth")
 table(as.character(GOI_am_CpG_rrbs$gene))
 
@@ -1353,8 +1360,8 @@ output_rrbs <- output_rrbs[!grepl("GL",output_rrbs$chr),]
 output_rrbs <- output_rrbs[!grepl("JH",output_rrbs$chr),]
 output_rrbs <- output_rrbs[!grepl("MT",output_rrbs$chr),]
 output_rrbs <- output_rrbs[!grepl("PATCH",output_rrbs$chr),]
-makeBedGraph(output_rrbs,c(1,2,2,7),"Kevin_tumor","Meth_perc",col=c("blue","orange"),range=c(0,1),isSign = (output_rrbs$adj.P.Val<0.10))
-makeBedGraph(output_rrbs,c(1,2,2,9),"Kevin_control","Meth_perc",col=c("green","red"),range=c(0,1),isSign = (output_rrbs$adj.P.Val<0.10))
+makeBedGraph(output_rrbs,c("chr","locations","locations","mean_T"),"Kevin_tumor","Meth_perc",col=c("blue","orange"),range=c(0,1),isSign = (output_rrbs$adj.P.Val<0.10))
+makeBedGraph(output_rrbs,c("chr","locations","locations","mean_C"),"Kevin_control","Meth_perc",col=c("green","red"),range=c(0,1),isSign = (output_rrbs$adj.P.Val<0.10))
 
 
 
@@ -1989,7 +1996,7 @@ dev.off()
 LIMMAout_highvslow <- topTable(fit,adjust="BH",number=nrow(infdata_Sandoval))
 LIMMAout_highvslow <- LIMMAout_highvslow[!is.na(LIMMAout_highvslow$adj.P.Val),]
 
-jpeg("Plots/MA_highvslowrisk.jpg")
+jpeg("Plots/MA_highvslowrisk_DE.jpg")
 plot(LIMMAout_highvslow$AveExpr,LIMMAout_highvslow$logFC,pch=20,xlab="Mean Log Expression",ylab="Log Fold Change")
 points(LIMMAout_highvslow$AveExpr[(LIMMAout_highvslow$adj.P.Val<0.05)],
        LIMMAout_highvslow$logFC[(LIMMAout_highvslow$adj.P.Val<0.05)],

@@ -6,9 +6,12 @@
 ############################
 ############################
 
+library(parallel)
+library(BiSeq)
+library(GenomicRanges)
 
 
-## getAveLogFC 
+## getAveLogFC
 ##################
 
 getAveLogFC <- function(genelist,data_obj,col_gene,col_logfc,func_mask=NULL){

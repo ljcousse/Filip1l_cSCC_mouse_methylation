@@ -1,6 +1,6 @@
 # Local paths for the cSCCmouseProject analysis.
 # Copy this file to environment.yml and fill in your own paths (environment.yml is not tracked by git).
 
-dir_pool20: /path/to/pool20/methylation   # Bismark .cov files of sequencing pool 20 (read by 1_import.R)
-dir_pool16: /path/to/pool16/methylation   # Bismark .cov files of sequencing pool 16 (read by 1_import.R)
+dir_pool20: /path/to/pool20/methylation   # Bismark .cov files of sequencing pool 20 (read by Import_RRBS.R)
+dir_pool16: /path/to/pool16/methylation   # Bismark .cov files of sequencing pool 16 (read by Import_RRBS.R)
 dir_work: /path/to/work                   # working directory: input files, intermediate objects and all output
