@@ -1,4 +1,4 @@
-# Conda environment for the cSCCmouseProject analysis.
+# Conda environment for the Filip1l_cSCC_mouse_methylation analysis.
 #
 # The versions in the manuscript (R 3.3.1, BiSeq 1.14.0, limma 3.30.13, wateRmelon 1.18.0,
 # ChAMPdata 2.18.0, biomaRt 2.24.0) come from different Bioconductor releases and are not

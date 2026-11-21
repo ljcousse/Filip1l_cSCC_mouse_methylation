@@ -922,6 +922,14 @@ write.table(GOI_am_CpG_Stem[sort(as.character(GOI_am_CpG_Stem$gene),index.return
 write.table("Human (Ker)",file="CpG_in_GOI.txt",col.names = F,row.names = F,quote=F,append=T)
 write.table(GOI_am_CpG_Ker[sort(as.character(GOI_am_CpG_Ker$gene),index.return=T)$ix,],file="CpG_in_GOI.txt",col.names = T,quote = F,row.names = F,sep="\t",append=T)
 
+# FILIP1L checks (interactive): significant promoter (TSS) probes in human, CpGs in mouse
+# lyko_Stem[(lyko_Stem$adj.P.Val <0.05) & (abs(lyko_Stem$Mean_T-lyko_Stem$Mean_C)>0.15) & grepl("TSS",lyko_Stem$feature) & (lyko_Stem$gene=="FILIP1L"),]
+# lyko_Ker[(lyko_Ker$adj.P.Val <0.05) & (abs(lyko_Ker$Mean_T-lyko_Ker$Mean_C)>0.15) & grepl("TSS",lyko_Ker$feature) & (lyko_Ker$gene=="FILIP1L"),]
+# 
+# output_rrbs$gene[(output_rrbs$adj.P.Val<0.10) & (abs(output_rrbs$mean_T-output_rrbs$mean_C)>0.20) & (output_rrbs$func=="promoter") & (grepl("FILIP1L",toupper(output_rrbs$gene_symbol_all)))]
+# output_rrbs$gene[(output_rrbs$func=="promoter") & (grepl("FILIP1L",toupper(output_rrbs$gene_symbol_all)))]
+# output_rrbs[(grepl("FILIP1L",toupper(output_rrbs$gene_symbol_all))),1:14]
+
 
 ################
 # makeBedGraph #

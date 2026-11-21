@@ -22,8 +22,8 @@ We profiled cutaneous squamous cell carcinoma (cSCC) of SKH-1 hairless mice expo
 ## Installation
 
 ```bash
-git clone https://github.com/ljcousse/cSCCmouseProject.git
-cd cSCCmouseProject
+git clone https://github.com/ljcousse/Filip1l_cSCC_mouse_methylation.git
+cd Filip1l_cSCC_mouse_methylation
 
 conda env create -f conda_environment.yml
 conda activate cscc_mouse
@@ -103,7 +103,7 @@ The analysis expects these input files in `dir_work`:
 - `Mouse_CGI.txt` (CpG island positions, UCSC Genome Browser CpG islands track for mm10; columns `chrom`, `chromStart`, `chromEnd`);
 - `idats/`, `idats_bis/` (E-MTAB-5738 `.idat` files, split in two folders because the files have different lengths) and `E-MTAB-5738.sdrf.txt`;
 - `idats_Sandoval/`, `E-MTAB-8542.sdrf.txt` and `Sample_info_Sandoval.txt` (lesion type per sample);
-- `CpG_panel.csv` ([[content and source]]);
+- `CpG_panel.csv` (DNA methylation prognosis signature of 32 CpGs predicting bad prognosis in cSCC, from the supplementary data of Hervás-Marín et al. (E-MTAB-8542). Expected columns: `IlmnID`, coefficient, direction of change (`UP`/`DOWN`), `CHR`, `MAPINFO`, then the Illumina annotation including `UCSC_RefGene_Name`);
 - `Pooling info_OXRRBSAlbena.xlsx` and `amountCpGs.txt` (mapping statistics, for `Summary_RRBS_mouse.R`);
 - `chipseq_tracks/` with the merged bigWig files of GSM3259343-GSM3259351.
 

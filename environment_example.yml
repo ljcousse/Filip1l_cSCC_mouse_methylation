@@ -1,4 +1,4 @@
-# Local paths for the cSCCmouseProject analysis.
+# Local paths for the Filip1l_cSCC_mouse_methylation analysis.
 # Copy this file to environment.yml and fill in your own paths (environment.yml is not tracked by git).
 
 dir_pool20: /path/to/pool20/methylation   # Bismark .cov files of sequencing pool 20 (read by Import_RRBS.R)
