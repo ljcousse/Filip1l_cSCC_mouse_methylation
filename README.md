@@ -78,7 +78,7 @@ Run the scripts from the repository directory (they read `environment.yml` from 
 
 - **Global methylation (mouse):** mean methylation per sample, ANOVA `y ~ tissue + mouse` and `y ~ tissue`, and a paired t-test of the 7 tumour/control pairs.
 - **Per CpG (mouse):** limma on M-values (`log2((β + 0.01)/(1 − β + 0.01))`), `~ tissue + mouse`, coefficient tissue, Benjamini-Hochberg correction. The independent healthy skin samples are controls with their own mouse level.
-- **DMRs (mouse):** BiSeq, CpG clusters with at least 15 CpGs, maximum distance 200 bp and coverage in 75% of the samples; beta regression (probit link) `~ tissue + mouse`; cluster FDR 0.1, CpG FDR 0.05. The `FDR` column of `DMR_analysis.txt` is Benjamini-Hochberg on the median p-value per DMR (the published version of the code used the stricter Holm correction here).
+- **DMRs (mouse):** BiSeq, CpG clusters with at least 15 CpGs, maximum distance 200 bp and coverage in 75% of the samples; beta regression (probit link) `~ tissue + mouse`; cluster FDR 0.1, CpG FDR 0.05. 
 - **Human EPIC:** limma on M-values per contrast (healthy skin vs AK and/or cSCC, AK vs cSCC, stem-cell-like vs keratinocyte-like, high- vs low-risk). Differentially methylated genes: adjusted p < 0.05 (human) and < 0.10 (mouse). Overlap of the gene sets tested with chi-squared tests, direction of change with a binomial test.
 
 Promoters are defined as −2,000 to +500 bp around the transcription start site; genic CpGs are the remaining CpGs within a gene.
