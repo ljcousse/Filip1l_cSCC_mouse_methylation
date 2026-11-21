@@ -55,4 +55,4 @@ write.table(tab[sort(tab$Sample,index.return=T)$ix,],"table_mapstat.txt",col.nam
 mask_filip1l <- rowSums((output_rrbs[,grepl("gene",colnames(output_rrbs)) & !grepl("gene_symbol",colnames(output_rrbs))]=="ENSMUSG00000043336") & !is.na(output_rrbs[,grepl("gene",colnames(output_rrbs)) & !grepl("gene_symbol",colnames(output_rrbs))]))>=1
 
 filip1l_kevin <- output_rrbs[mask_filip1l,]
-write.table(filip1l_kevin,file="Filip1l_Kevin.txt",row.names = F,col.names = T,sep="\t",quote = F)
+write.table(filip1l_kevin,file="Filip1l_RRBS_mouse.txt",row.names = F,col.names = T,sep="\t",quote = F)

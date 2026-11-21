@@ -9,10 +9,10 @@ We profiled cutaneous squamous cell carcinoma (cSCC) of SKH-1 hairless mice expo
 | File | Purpose |
 |---|---|
 | `Import_RRBS.R` | Reads the Bismark `.cov` files (RRBS `B*` and oxRRBS `O*` samples) of both sequencing pools into one BiSeq `BSraw` object with the sample annotation; saves `allRRBS.rdata` |
-| `Analysis_kevin.R` | Main mouse analysis: replicate clustering, merging of the technical replicates, coverage filtering, global methylation and coverage tests, hydroxymethylation (RRBS − oxRRBS), per-CpG limma analysis, promoter/genic/intergenic annotation (biomaRt, Ensembl January 2019 archive), DMR analysis (BiSeq) |
-| `Analysis_Lyko.R` | Human EPIC analysis and comparison with the mouse results: limma per contrast (healthy skin, AK, cSCC, stem-cell-like and keratinocyte-like subtypes), orthologue mapping, overlap of differentially methylated genes, genes of interest, keratin cluster, high- vs low-risk lesions (E-MTAB-8542) |
-| `AdditionalFunctions.R` | Functions for average logFC and gene symbols per gene, orthologue mapping, overlap of the mouse and human gene sets, bedGraph tracks and DMR analysis (sourced by `Analysis_Lyko.R`) |
-| `Analysis_kevin_localPC.R` | Post-processing of `output_rrbs.txt`: summary bar plots, mapping statistics table, all CpGs in Filip1l |
+| `Analysis_RRBS_mouse.R` | Main mouse analysis: replicate clustering, merging of the technical replicates, coverage filtering, global methylation and coverage tests, hydroxymethylation (RRBS − oxRRBS), per-CpG limma analysis, promoter/genic/intergenic annotation (biomaRt, Ensembl January 2019 archive), DMR analysis (BiSeq) |
+| `Analysis_EPIC_human_Lyko.R` | Human EPIC analysis of the Rodríguez-Paredes et al. (Lyko lab, Nature Communications 2018) data and comparison with the mouse results: limma per contrast (healthy skin, AK, cSCC, stem-cell-like and keratinocyte-like subtypes), orthologue mapping, overlap of differentially methylated genes, genes of interest, keratin cluster, high- vs low-risk lesions (E-MTAB-8542) |
+| `AdditionalFunctions.R` | Functions for average logFC and gene symbols per gene, orthologue mapping, overlap of the mouse and human gene sets, bedGraph tracks and DMR analysis (sourced by `Analysis_EPIC_human_Lyko.R`) |
+| `Summary_RRBS_mouse.R` | Post-processing of `output_rrbs.txt`: summary bar plots, mapping statistics table, all CpGs in Filip1l |
 | `ProcessBigWig.bash` | Public ChIP-seq tracks (CTCF, H3K27Ac, H3K27me3; GSM3259343-GSM3259351): bigWig → bedGraph, liftOver mm9 → mm10, merge of overlapping intervals, merge of replicates → one bigWig per mark |
 | `mergeRegions.R` | Merges overlapping bedGraph intervals after liftOver (called by `ProcessBigWig.bash`) |
 | `UCSCtracks_histonmod.R` | Downloads public histone modification peaks (H3K27Ac, H3K4me3, H3K27me3; GSM3634100-GSM3634105) and writes UCSC narrowPeak tracks in mm10 and mm9 (liftOver) |
@@ -60,9 +60,9 @@ Run the scripts from the repository directory (they read `environment.yml` from 
 ## Running the analysis
 
 1. **Import:** `Rscript Import_RRBS.R` (Bismark `.cov` files → `BSraw` object `allRRBS.rdata` in `dir_work`). 36 libraries: 18 RRBS and 18 oxRRBS.
-2. **Mouse analysis:** `Rscript Analysis_kevin.R`. Technical replicates are clustered (top 10,000 most variable CpGs) and then merged by summing the read counts. Only RRBS CpGs covered by at least 8 reads in all samples and with at least 6 methylated reads in total are kept; the oxRRBS data are restricted to the same CpGs. The RRBS − oxRRBS difference (hydroxymethylation) was mainly noise, so the further analysis uses the RRBS data only. The DMR analysis uses 20 cores (`mc.cores = 20`); change this for smaller machines. Needs `Mouse_CGI.txt` and downloads the Ensembl gene annotation once (`genes.Rda`).
-3. **Comparison with human data:** `Rscript Analysis_Lyko.R` (EPIC `.idat` files → M-values → limma per contrast → overlap with `output_rrbs.txt` via orthologues). `AdditionalFunctions.R` uses 25 cores (`mc.cores = 25`). Plots go to `dir_work/Plots/` and `dir_work/Risk_analysis/`.
-4. **Post-processing:** `Rscript Analysis_kevin_localPC.R` (`output_rrbs.txt` → summary plots, `table_mapstat.txt`, `Filip1l_Kevin.txt`).
+2. **Mouse analysis:** `Rscript Analysis_RRBS_mouse.R`. Technical replicates are clustered (top 10,000 most variable CpGs) and then merged by summing the read counts. Only RRBS CpGs covered by at least 8 reads in all samples and with at least 6 methylated reads in total are kept; the oxRRBS data are restricted to the same CpGs. The RRBS − oxRRBS difference (hydroxymethylation) was mainly noise, so the further analysis uses the RRBS data only. The DMR analysis uses 20 cores (`mc.cores = 20`); change this for smaller machines. Needs `Mouse_CGI.txt` and downloads the Ensembl gene annotation once (`genes.Rda`).
+3. **Comparison with human data:** `Rscript Analysis_EPIC_human_Lyko.R` (EPIC `.idat` files → M-values → limma per contrast → overlap with `output_rrbs.txt` via orthologues). `AdditionalFunctions.R` uses 25 cores (`mc.cores = 25`). Plots go to `dir_work/Plots/` and `dir_work/Risk_analysis/`.
+4. **Post-processing:** `Rscript Summary_RRBS_mouse.R` (`output_rrbs.txt` → summary plots, `table_mapstat.txt`, `Filip1l_RRBS_mouse.txt`).
 5. **Genome browser tracks:** `bash ProcessBigWig.bash` (merged wild-type ChIP-seq bigWigs in `dir_work/chipseq_tracks/` → `CTCF.bw`, `H3K27Ac.bw`, `H3K27Me3.bw` in mm10; only files with `WT` and `merged.bw` in their name are processed). `Rscript UCSCtracks_histonmod.R` (GEO peak files → `*_mm10_narrowPeak.txt`, `*_mm9_narrowPeak.txt`). Both scripts download the UCSC liftOver chain files they need.
 
 ### Main outputs
@@ -76,7 +76,7 @@ Run the scripts from the repository directory (they read `environment.yml` from 
 | `results_lyko_Ker.txt`, `results_lyko_Stem.txt` | Human EPIC results, healthy skin vs keratinocyte-like and stem-cell-like tumours |
 | `CpG_in_GOI.txt` | Number of CpGs in the genes of interest (mouse and human) |
 | `Methylation_plot_paper.tiff`, `Methylation_plot_paper_small.tiff` | Global methylation, tumour vs control (all CpGs, and CpGs after filtering) |
-| `Kevin_tumor.BedGraph`, `Kevin_control.BedGraph` | UCSC tracks with the mean methylation per CpG in tumour and control; significant CpGs (FDR < 0.10) as positive values, the other CpGs as negative values |
+| `RRBS_tumour.BedGraph`, `RRBS_control.BedGraph` | UCSC tracks with the mean methylation per CpG in tumour and control; significant CpGs (FDR < 0.10) as positive values, the other CpGs as negative values |
 | `CTCF.bw`, `H3K27Ac.bw`, `H3K27Me3.bw`, `*_narrowPeak.txt` | Public ChIP-seq tracks and histone peaks for the UCSC genome browser |
 | `Clustering.jpg`, `Risk_analysis_FILIP1L_sign.jpg` | Replicate clustering, FILIP1L in high- vs low-risk lesions |
 
@@ -104,7 +104,7 @@ The analysis expects these input files in `dir_work`:
 - `idats/`, `idats_bis/` (E-MTAB-5738 `.idat` files, split in two folders because the files have different lengths) and `E-MTAB-5738.sdrf.txt`;
 - `idats_Sandoval/`, `E-MTAB-8542.sdrf.txt` and `Sample_info_Sandoval.txt` (lesion type per sample);
 - `CpG_panel.csv` ([[content and source]]);
-- `Pooling info_OXRRBSAlbena.xlsx` and `amountCpGs.txt` (mapping statistics, for `Analysis_kevin_localPC.R`);
+- `Pooling info_OXRRBSAlbena.xlsx` and `amountCpGs.txt` (mapping statistics, for `Summary_RRBS_mouse.R`);
 - `chipseq_tracks/` with the merged bigWig files of GSM3259343-GSM3259351.
 
 ## License
