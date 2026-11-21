@@ -1,4 +1,13 @@
-setwd("C:/Users/Louis/OneDrive/Louis/AAP/Project_Kevin/")
+library(yaml)
+
+# Directories are read from environment.yml (copy environment_example.yml and fill in the local paths)
+if (!file.exists("environment.yml")){
+  stop("environment.yml not found, copy environment_example.yml and fill in the local paths")
+}
+env <- read_yaml("environment.yml")
+
+dir_work <- env$dir_work
+setwd(dir_work)
 
 library(xlsx)
 output_rrbs <- read.table("output_rrbs.txt",sep="\t",stringsAsFactors = T,header = T)

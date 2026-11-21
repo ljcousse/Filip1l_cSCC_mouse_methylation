@@ -5,6 +5,11 @@
 # conda install ucsc-bigwigtobedgraph
 # conda install ucsc-bedgraphtobigwig
 
+# Directories are read from environment.yml (copy environment_example.yml and fill in the local paths)
+dir_repo=$(pwd)
+dir_work=$(awk '$1=="dir_work:" {print $2}' environment.yml)
+cd ${dir_work}
+
 cd chipseq_tracks
 rm $(ls | grep -v WT)
 cd ..
@@ -21,7 +26,7 @@ do
 	liftOver chipseq_tracks/${file:0:10}.BedGraph mm9ToMm10.over.chain chipseq_tracks/${file:0:10}_mm10.bedGraph chipseq_tracks/${file:0:10}_failed.bedGraph
 	bedSort chipseq_tracks/${file:0:10}_mm10.bedGraph chipseq_tracks/${file:0:10}_mm10_sorted.bedGraph
 	#bedGraphToBigWig chipseq_tracks/${file:0:10}_mm10_sorted.BedGraph  mm10.chrom.sizes chipseq_tracks/${file:0:10}_mm10.bw
-	Rscript mergeRegions.R ${file:0:10}
+	Rscript ${dir_repo}/mergeRegions.R ${file:0:10}
 	bedSort chipseq_tracks/${file:0:10}_mm10_merged.bedGraph chipseq_tracks/${file:0:10}_mm10_merged_sorted.bedGraph
 	bedGraphToBigWig chipseq_tracks/${file:0:10}_mm10_merged_sorted.bedGraph  mm10.chrom.sizes chipseq_tracks/${file:0:10}_mm10.bw
 done
@@ -39,7 +44,7 @@ bedGraphToBigWig chipseq_tracks/H3K27Me3_merged_sorted.bedGraph  mm10.chrom.size
 #	bigWigToBedGraph chipseq_tracks/GSM3259343_P50-WT-Dorsal-Dermis-CTCF-0-merged.bw chipseq_tracks/GSM3259343.BedGraph
 #	liftOver chipseq_tracks/GSM3259343.BedGraph mm9ToMm10.over.chain chipseq_tracks/GSM3259343_mm10.BedGraph chipseq_tracks/GSM3259343_failed.BedGraph
 #	bedSort chipseq_tracks/GSM3259343_mm10.BedGraph chipseq_tracks/GSM3259343_mm10_sorted.BedGraph
-#	Rscript mergeRegions.R GSM3259343
+#	Rscript ${dir_repo}/mergeRegions.R GSM3259343
 #	bedSort chipseq_tracks/GSM3259343_mm10_merged.BedGraph chipseq_tracks/GSM3259343_mm10_merged_sorted.BedGraph
 #	bedGraphToBigWig chipseq_tracks/GSM3259343_mm10_merged_sorted.BedGraph  mm10.chrom.sizes chipseq_tracks/GSM3259343_mm10.bw
 #	

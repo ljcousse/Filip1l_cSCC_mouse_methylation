@@ -1,0 +1,41 @@
+# Conda environment for the cSCCmouseProject analysis.
+#
+# The versions in the manuscript (R 3.3.1, BiSeq 1.14.0, limma 3.30.13, wateRmelon 1.18.0,
+# ChAMPdata 2.18.0, biomaRt 2.24.0) come from different Bioconductor releases and are not
+# available together on conda (BiSeq 1.14.0 and wateRmelon 1.18.0 are not on bioconda at all).
+# This environment uses one consistent release instead: R 3.6 with Bioconductor 3.10, the release
+# of ChAMPdata 2.18.0. Results may differ slightly from the published ones.
+#
+# conda env create -f conda_environment.yml
+# conda activate cscc_mouse
+
+name: cscc_mouse
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=3.6
+  # Bioconductor 3.10
+  - bioconductor-biseq=1.26.0
+  - bioconductor-genomicranges=1.38.0
+  - bioconductor-genomicfeatures=1.38.0
+  - bioconductor-rtracklayer=1.46.0
+  - bioconductor-limma=3.42.0
+  - bioconductor-biomart=2.42.0
+  - bioconductor-watermelon=1.30.0
+  - bioconductor-methylumi=2.32.0
+  - bioconductor-champdata=2.18.0
+  # CRAN
+  - r-yaml
+  - r-gplots
+  - r-ggplot2
+  - r-xlsx
+  # Genome browser tracks (ProcessBigWig.bash, UCSCtracks_histonmod.R)
+  - ucsc-bigwigtobedgraph
+  - ucsc-liftover
+  - ucsc-bedsort
+  - ucsc-bedgraphtobigwig
+  - ucsc-bigwigmerge
+  - ucsc-fetchchromsizes
+  - pigz
+  - wget

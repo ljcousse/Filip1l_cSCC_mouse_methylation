@@ -11,13 +11,23 @@ library(rtracklayer)
 library(GenomicFeatures)
 library(limma)
 library(biomaRt)
+library(yaml)
+
+# Directories are read from environment.yml (copy environment_example.yml and fill in the local paths)
+if (!file.exists("environment.yml")){
+  stop("environment.yml not found, copy environment_example.yml and fill in the local paths")
+}
+env <- read_yaml("environment.yml")
+
+dir_work <- env$dir_work
+setwd(dir_work)
 
 # parameters
 mincov <- 8
 minmethreads <- 6
 ct <- 0.01
 
-load("/home/kevinr/oxRRBS/allRRBS.rdata")
+load("allRRBS.rdata")
 
 print(head(allRRBS))
 
@@ -38,7 +48,7 @@ f1 <- as.factor(f1)
 f2 <- as.factor(f2)
 
 sample_info <- t(rbind(colnames(allRRBS),as.character(f1),as.character(f2)))
-write.table(sample_info,"/home/louisc/Kevin/sample_info.txt",col.names = F,row.names = F,sep="\t",quote = F)
+write.table(sample_info,"sample_info.txt",col.names = F,row.names = F,sep="\t",quote = F)
 
 # m_matrix <- matrix(as.matrix(methLevel(rrbs_repl.M)[apply(methLevel(rrbs_repl.M),1,var)>sort(apply(methLevel(rrbs_repl.M),1,var),decreasing = T)[10000],]),ncol=18)
 m_matrix <- matrix(as.matrix(methLevel(rawToRel(allRRBS[,grep("B",colnames(allRRBS))]))),ncol=18)

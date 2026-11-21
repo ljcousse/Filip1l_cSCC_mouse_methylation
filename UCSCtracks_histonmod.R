@@ -1,3 +1,14 @@
+library(yaml)
+
+# Directories are read from environment.yml (copy environment_example.yml and fill in the local paths)
+if (!file.exists("environment.yml")){
+  stop("environment.yml not found, copy environment_example.yml and fill in the local paths")
+}
+env <- read_yaml("environment.yml")
+
+dir_work <- env$dir_work
+setwd(dir_work)
+
 links <- c("https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM3634nnn/GSM3634100/suppl/GSM3634100_WT1_H3K27Ac_peaks.txt.gz",
            "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM3634nnn/GSM3634103/suppl/GSM3634103_WT2_H3K27Ac_peaks.txt.gz",
            "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM3634nnn/GSM3634102/suppl/GSM3634102_WT1_H3K4me3_peaks.txt.gz",

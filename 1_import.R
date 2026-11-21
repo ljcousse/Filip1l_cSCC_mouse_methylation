@@ -3,6 +3,17 @@ library(GenomicRanges)
 library(rtracklayer)
 library(GenomicFeatures)
 library(limma)
+library(yaml)
+
+# Directories are read from environment.yml (copy environment_example.yml and fill in the local paths)
+if (!file.exists("environment.yml")){
+  stop("environment.yml not found, copy environment_example.yml and fill in the local paths")
+}
+env <- read_yaml("environment.yml")
+
+dir_pool20 <- env$dir_pool20
+dir_pool16 <- env$dir_pool16
+dir_work <- env$dir_work
 
 
 ##############
@@ -13,7 +24,7 @@ library(limma)
 ##grep all files individually for both folders
 
 #first folder
-setwd("/home/sandras/albenas/pool20/methylation")
+setwd(dir_pool20)
 getwd()
 only_B_20<-grep("B", dir())
 only_B_files_20<-dir()[only_B_20]
@@ -34,7 +45,7 @@ b_56_1<-pool_20[grep("56_", pool_20)]
 b_562_1<-pool_20[grep("562", pool_20)]
 
 #2nd folder
-setwd("/home/sandras/albenas/pool16/methylation")
+setwd(dir_pool16)
 getwd()
 only_B_16<-grep("B", dir())
 only_B_files_16<-dir()[only_B_16]
@@ -56,20 +67,20 @@ b_562_2<-pool_16[grep("562", pool_16)]
 
 ### different folders, reading files in folder by folder, then combining
 tumor_RRBS_samples_20<-c(b_168, b_352, b_444, b_545, b_562_1)
-tumor_RRBS_samples_20new<-paste("/home/sandras/albenas/pool20/methylation", tumor_RRBS_samples_20, sep="/")
+tumor_RRBS_samples_20new<-paste(dir_pool20, tumor_RRBS_samples_20, sep="/")
 tumor_RRBS_samples_16<-c(b_562_2, b_851, b_874)
-tumor_RRBS_samples_16new<-paste("/home/sandras/albenas/pool16/methylation", tumor_RRBS_samples_16, sep="/")
+tumor_RRBS_samples_16new<-paste(dir_pool16, tumor_RRBS_samples_16, sep="/")
 tumor_RRBS_samples<-c(tumor_RRBS_samples_20new, tumor_RRBS_samples_16new)
 tumor_RRBS_samples
 
 matcon_RRBS_samples_20<-c(b_16, b_35, b_44, b_54, b_56_1)
-matcon_RRBS_samples_20new<-paste("/home/sandras/albenas/pool20/methylation", matcon_RRBS_samples_20, sep="/")
+matcon_RRBS_samples_20new<-paste(dir_pool20, matcon_RRBS_samples_20, sep="/")
 matcon_RRBS_samples_16<-c(b_56_2, b_85, b_87)
-matcon_RRBS_samples_16new<-paste("/home/sandras/albenas/pool16/methylation", matcon_RRBS_samples_16, sep="/")
+matcon_RRBS_samples_16new<-paste(dir_pool16, matcon_RRBS_samples_16, sep="/")
 matcon_RRBS_samples<-c(matcon_RRBS_samples_20new, matcon_RRBS_samples_16new)
 matcon_RRBS_samples
 
-ihs_RRBS_samples<-paste("/home/sandras/albenas/pool16/methylation", c(b_45, b_77), sep="/")
+ihs_RRBS_samples<-paste(dir_pool16, c(b_45, b_77), sep="/")
 ihs_RRBS_samples
 
 all_RRBS_samples<-c(tumor_RRBS_samples, matcon_RRBS_samples, ihs_RRBS_samples)
@@ -102,7 +113,7 @@ b77<-c("B77", "16", "iHS", "n")
 ##grep all files individually for both folders
 
 #first folder
-setwd("/home/sandras/albenas/pool20/methylation")
+setwd(dir_pool20)
 getwd()
 only_ox_20<-grep("O", dir())
 only_ox_files_20<-dir()[only_ox_20]
@@ -124,7 +135,7 @@ o_562_1<-pool_20[grep("562", pool_20)]
 
 
 #2nd folder
-setwd("/home/sandras/albenas/pool16/methylation")
+setwd(dir_pool16)
 getwd()
 only_ox_16<-grep("O", dir())
 only_ox_files_16<-dir()[only_ox_16]
@@ -146,20 +157,20 @@ o_562_2<-pool_16[grep("562", pool_16)]
 
 ### different folders, reading files in folder by folder, then combining
 tumor_oxRRBS_samples_20<-c(o_168, o_352, o_444, o_545, o_562_1)
-tumor_oxRRBS_samples_20new<-paste("/home/sandras/albenas/pool20/methylation", tumor_oxRRBS_samples_20, sep="/")
+tumor_oxRRBS_samples_20new<-paste(dir_pool20, tumor_oxRRBS_samples_20, sep="/")
 tumor_oxRRBS_samples_16<-c(o_562_2, o_851, o_874)
-tumor_oxRRBS_samples_16new<-paste("/home/sandras/albenas/pool16/methylation", tumor_oxRRBS_samples_16, sep="/")
+tumor_oxRRBS_samples_16new<-paste(dir_pool16, tumor_oxRRBS_samples_16, sep="/")
 tumor_oxRRBS_samples<-c(tumor_oxRRBS_samples_20new, tumor_oxRRBS_samples_16new)
 tumor_oxRRBS_samples
 
 matcon_oxRRBS_samples_20<-c(o_16, o_35, o_44, o_54, o_56_1)
-matcon_oxRRBS_samples_20new<-paste("/home/sandras/albenas/pool20/methylation", matcon_oxRRBS_samples_20, sep="/")
+matcon_oxRRBS_samples_20new<-paste(dir_pool20, matcon_oxRRBS_samples_20, sep="/")
 matcon_oxRRBS_samples_16<-c(o_56_2, o_85, o_87)
-matcon_oxRRBS_samples_16new<-paste("/home/sandras/albenas/pool16/methylation", matcon_oxRRBS_samples_16, sep="/")
+matcon_oxRRBS_samples_16new<-paste(dir_pool16, matcon_oxRRBS_samples_16, sep="/")
 matcon_oxRRBS_samples<-c(matcon_oxRRBS_samples_20new, matcon_oxRRBS_samples_16new)
 matcon_oxRRBS_samples
 
-ihs_oxRRBS_samples<-paste("/home/sandras/albenas/pool16/methylation", c(o_45, o_77), sep="/")
+ihs_oxRRBS_samples<-paste(dir_pool16, c(o_45, o_77), sep="/")
 ihs_oxRRBS_samples
 
 all_oxRRBS_samples<-c(tumor_oxRRBS_samples, matcon_oxRRBS_samples, ihs_oxRRBS_samples)
@@ -204,5 +215,5 @@ all<-c(all_RRBS_samples, all_oxRRBS_samples)
 allRRBS<-readBismark(all,colData=annot_df)
 
 #save
-setwd("/home/kevinr/oxRRBS/")
+setwd(dir_work)
 save(allRRBS, file="allRRBS.rdata")
