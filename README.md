@@ -34,12 +34,6 @@ The environment contains:
 - CRAN: `yaml`, `gplots`, `ggplot2`, `xlsx`;
 - UCSC tools `bigWigToBedGraph`, `liftOver`, `bedSort`, `bedGraphToBigWig`, `bigWigMerge`, `fetchChromSizes`, plus `pigz` and `wget` (for the genome browser tracks).
 
-The original analysis was run on a Linux server with R 3.3.1, BiSeq 1.14.0, limma 3.30.13, wateRmelon 1.18.0, ChAMPdata 2.18.0 and biomaRt 2.24.0 (versions as in the manuscript), installed without conda. These versions come from different Bioconductor releases and cannot be installed together with conda. `conda_environment.yml` was made afterwards for reproducibility. It uses one consistent release, R 3.6 with Bioconductor 3.10 (the release of ChAMPdata 2.18.0), and all pinned versions have Linux builds on conda-forge/bioconda that agree with each other. Results may differ slightly from the published ones.
-
-If the environment does not solve, use strict channel priority (`conda config --set channel_priority strict`) or `mamba env create -f conda_environment.yml`.
-
-The annotation steps query the Ensembl January 2019 archive (`jan2019.archive.ensembl.org`) with biomaRt. If that archive is no longer available, the cached `genes.Rda`, `human.Rda`, `mouse.Rda`, `orth.mouse.Rda`, `mgi.Rda` and `probe.features_ens.Rda` files are needed in `dir_work`.
-
 The pre-processing is not part of this repository: reads (NextSeq 500, 76 bp single-end) were trimmed with Trim Galore and mapped to GRCm38 with Bismark (v0.16.3, Bowtie2 mode, default settings). The analysis starts from the Bismark `.cov` files.
 
 ## Configuration
