@@ -38,7 +38,7 @@ The pre-processing is not part of this repository: reads (NextSeq 500, 76 bp sin
 
 ## Configuration
 
-Local paths are not hard-coded. Copy the template and fill in your paths:
+Copy the template and fill in your paths:
 
 ```bash
 cp environment_example.yml environment.yml
